@@ -33,13 +33,13 @@ spring:
         #数据源a01
         a01:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://120.92.154.4:3306/scheduledb33?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+          url: jdbc:mysql://ip:3306/scheduledb33?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
           username: scheduledb33
           password: wTTXaRYSThTNeeGL
         #数据源a03
         a03:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://49.232.98.67:3306/worker?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+          url: jdbc:mysql://ip:3306/worker?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
           username: scheduledb
           password: XSLstbx7iXBXNzeR
   servlet:
