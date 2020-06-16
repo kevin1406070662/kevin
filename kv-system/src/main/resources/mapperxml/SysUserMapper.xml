@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kevin.system.dao.SysUserMapper">
+  <resultMap id="BaseResultMap" type="com.kevin.system.domain.SysUser">
+    <!--@mbg.generated-->
+    <!--@Table tb_sys_user-->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="userName" jdbcType="VARCHAR" property="username" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="deptid" jdbcType="INTEGER" property="deptid" />
+    <result column="roleid" jdbcType="INTEGER" property="roleid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="portrait" jdbcType="VARCHAR" property="portrait" />
+    <result column="salt" jdbcType="VARCHAR" property="salt" />
+    <result column="createBy" jdbcType="VARCHAR" property="createby" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updateBy" jdbcType="VARCHAR" property="updateby" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, userName, account, `password`, phone, sex, deptid, roleid, create_time, portrait,
+    salt, createBy, createTime, updateBy, updateTime, remark
+  </sql>
+  <select id="selectPermsByRole" resultType="java.lang.String">
+            SELECT DISTINCT
+                mu.perms
+            FROM
+                tb_sys_menu AS mu
+                LEFT JOIN tb_sys_role_meun AS ue ON ue.meunID = mu.id
+                LEFT JOIN tb_sys_user_role AS ur ON ur.roleID = ue.roleID
+            WHERE
+                ur.userID = #{userID}
+   </select>
+</mapper>

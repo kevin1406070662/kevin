@@ -1,0 +1,19 @@
+-- 菜单 SQL
+INSERT INTO `sys_menu` (menu_name, parent_id, order_num, url, menu_type, visible, perms, component, redirect, icon, create_by, create_time, update_by, update_time, remark)
+VALUES ('${tableComment}', '3' , 1, '/${moduleName}/${classname}', 'C', '0', '${moduleName}:${classname}:list', '${className}', NULL, '#', 'admin', '2020-03-25 17:22:06', '', NULL, '${tableComment}菜单');
+
+-- 按钮父菜单ID
+SELECT @parentId := LAST_INSERT_ID();
+
+-- 按钮 SQL
+INSERT INTO `sys_menu` (menu_name, parent_id, order_num, url, menu_type, visible, perms, component, redirect, icon, create_by, create_time, update_by, update_time, remark)
+VALUES ('${tableComment}查询', @parentId, 1, '#', 'F', '', '${moduleName}:${classname}:query', NULL, NULL, '#', 'admin', '2018-03-16 11:33:00', 'admin', '2019-12-20 07:09:10', '${tableComment}查询');
+
+INSERT INTO `sys_menu` (menu_name, parent_id, order_num, url, menu_type, visible, perms, component, redirect, icon, create_by, create_time, update_by, update_time, remark)
+VALUES ('${tableComment}新增', @parentId, 2, '#', 'F', '', '${moduleName}:${classname}:add', NULL, NULL, '#', 'admin', '2018-03-16 11:33:00', 'admin', '2019-12-20 07:09:10', '${tableComment}新增');
+
+INSERT INTO `sys_menu` (menu_name, parent_id, order_num, url, menu_type, visible, perms, component, redirect, icon, create_by, create_time, update_by, update_time, remark)
+VALUES ('${tableComment}修改', @parentId, 2, '#', 'F', '', '${moduleName}:${classname}:edit', NULL, NULL, '#','admin', '2018-03-16 11:33:00', 'admin', '2019-12-20 07:09:10', '${tableComment}修改');
+
+INSERT INTO `sys_menu` (menu_name, parent_id, order_num, url, menu_type, visible, perms, component, redirect, icon, create_by, create_time, update_by, update_time, remark)
+VALUES ('${tableComment}删除', @parentId, 2, '#', 'F', '', '${moduleName}:${classname}:remove', NULL, NULL, '#', 'admin', '2018-03-16 11:33:00', 'admin', '2019-12-20 07:09:10', '${tableComment}删除');

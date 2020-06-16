@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kevin.system.dao.SysOpenLogMapper">
+    <resultMap type="com.kevin.system.domain.SysOpenLog" id="SysOpenLogResult">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="operationType" column="operationType"/>
+        <result property="method" column="method"/>
+        <result property="requestMethod" column="requestMethod"/>
+        <result property="operName" column="operName"/>
+        <result property="operUrl" column="operUrl"/>
+        <result property="operIp" column="operIp"/>
+        <result property="operLocation" column="operLocation"/>
+        <result property="operParam" column="operParam"/>
+        <result property="jsonResult" column="jsonResult"/>
+        <result property="status" column="status"/>
+        <result property="errorMsg" column="errorMsg"/>
+        <result property="processingTime" column="processingTime"/>
+        <result property="createTime" column="createTime"/>
+    </resultMap>
+</mapper>

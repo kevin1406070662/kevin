@@ -1,0 +1,38 @@
+import http from '@/utils/http';
+
+/**
+ * 获取${tableComment}列表
+ * @param params
+ * @returns {*|Promise<any>}
+ */
+export function get${className}List(params?: any) {
+    return http.get('${moduleName}/${classname}/list', {params: params});
+}
+
+
+/**
+ * 删除${tableComment}
+ * @param params
+ * @returns {*|Promise<any>}
+ */
+export function remove${className}(params: any) {
+    return http.delete('${moduleName}/${classname}/remove', {params: params});
+}
+
+/**
+ * 保存${tableComment}
+ * @param params
+ * @returns {*|Promise<any>}
+ */
+export function update${className}(params: any) {
+    return http.put('${moduleName}/${classname}/edit', params);
+}
+
+/**
+ * 新增${tableComment}
+ * @param params
+ * @returns {*|Promise<any>}
+ */
+export function add${className}(params: any) {
+    return http.post("${moduleName}/${classname}/add", params);
+}

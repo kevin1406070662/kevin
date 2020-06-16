@@ -1,0 +1,87 @@
+server:
+  port: 8081
+  servlet:
+    # 应用的访问路径
+    context-path: /
+    tomcat:
+      # tomcat的URI编码
+      uri-encoding: UTF-8
+      # tomcat最大线程数，默认为200
+      max-threads: 800
+      # Tomcat启动初始化的线程数，默认值25
+      min-spare-threads: 30
+spring:
+  datasource:
+    #配置hikari连接池
+    hikari:
+      minimum-idle: 4
+      maximum-pool-size: 16
+      connection-timeout: 10000
+      idle-timeout: 30000
+      connection-init-sql: set names utf8mb4
+      connection-test-query: SELECT 1
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    #配置不给前端返回null
+    default-property-inclusion: non_null
+    #动态数据源配置
+    dynamic:
+      #主数据源
+      primary: a01
+      datasource:
+        #数据源a01
+        a01:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://120.92.154.4:3306/scheduledb33?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+          username: scheduledb33
+          password: wTTXaRYSThTNeeGL
+        #数据源a03
+        a03:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://49.232.98.67:3306/worker?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+          username: scheduledb
+          password: XSLstbx7iXBXNzeR
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 20MB
+  #redis配置
+#  redis:
+#    host: 127.0.0.1
+#    port: 6379
+#    timeout: 10000
+#    database: 0
+#    password:
+
+#分页
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+  # mybatis-plus相关配置
+mybatis-plus:
+  # xml扫描，多个目录用逗号或者分号分隔（告诉 Mapper 所对应的 XML 文件位置）
+  mapper-locations: classpath:mapperxml/*.xml
+  # 以下配置均有默认值,可以不设置
+  global-config:
+    db-config:
+      #主键类型 AUTO:"数据库ID自增" INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: auto
+      #字段策略 IGNORED:"忽略判断"  NOT_NULL:"非 NULL 判断")  NOT_EMPTY:"非空判断"
+      field-strategy: NOT_EMPTY
+      #数据库类型
+      db-type: MYSQL
+  configuration:
+    # 是否开启自动驼峰命名规则映射:从数据库列名到Java属性驼峰命名的类似映射
+    map-underscore-to-camel-case: true
+    # 如果查询结果中包含空值的列，则 MyBatis 在映射的时候，不会映射这个字段
+    call-setters-on-nulls: true
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  config: classpath:logback-spring.xml

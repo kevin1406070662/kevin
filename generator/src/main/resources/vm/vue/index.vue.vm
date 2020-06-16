@@ -1,0 +1,294 @@
+<template>
+    <div class="tableRow">
+        <el-row class="select-list" v-permission="'${moduleName}:${classname}:query'">
+            <el-form :inline="true" ref="selectForm" :model="selectFormModel" :label-position="'right'"
+                     label-width="80px" size="mini" @submit.native.prevent>
+                <el-form-item label="名称" prop="name">
+                    <el-input v-model="selectFormModel.name" placeholder="名称" style="width: 200px" clearable
+                              @keyup.enter.native="onSearch"/>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" size="mini" plain round @click="onSearch">搜索
+                    </el-button>
+                    <el-button type="warning" icon="el-icon-refresh" size="mini" plain round
+                               @click="onRefreshSelectForm">重置
+                    </el-button>
+                </el-form-item>
+            </el-form>
+        </el-row>
+        <el-row class="toolbar">
+            <el-button type="primary" icon="el-icon-plus" size="mini" plain @click="handleAdd"
+                       v-permission="'${moduleName}:${classname}:add'">
+                新增
+            </el-button>
+            <el-button type="info" icon="el-icon-edit" :disabled="dialog.isBatchEditDisabled" size="mini" plain
+                       @click="handleEdit" v-permission="'${moduleName}:${classname}:edit'"> 编辑
+            </el-button>
+            <el-button type="danger" icon="el-icon-delete" :disabled="dialog.isBatchRemoveDisabled" size="mini" plain
+                       @click="handleBatchDelete" v-permission="'${moduleName}:${classname}:remove'"> 删除
+            </el-button>
+        </el-row>
+        <data-table ref="dataTable"
+                    :options="options"
+                    :operates="operates"
+                    :api="get${className}List"
+                    :columns="columns"
+                    :query="selectFormModel"
+                    @handleSelectionChange="handleSelectionChange"
+        />
+
+        <el-dialog :title="dialog.title" :visible.sync="dialog.dialogFormVisible"
+                   :modal-append-to-body="false"
+                   @close="closeDialog"
+                   :destroy-on-close="false" width="600px">
+            <el-form :model="${classname}Model" ref="${classname}Form" label-width="100px" :rules="${classname}FormRules" size="small">
+
+#foreach($column in $columns)
+#if(${column.attrname}!=${primaryKey.attrname})
+                <el-form-item label="${column.columnComment}" prop="${column.attrname}">
+                    <el-input v-model="${classname}Model.${column.attrname}" placeholder="${column.columnComment}"/>
+                </el-form-item>
+#end
+#end
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialog.dialogFormVisible=false" size="medium">取 消</el-button>
+                <el-button type="primary" @click="submitForm" size="medium">确 定</el-button>
+            </div>
+        </el-dialog>
+    </div>
+</template>
+<script lang="ts">
+    import {Component, Ref, Vue} from "vue-property-decorator";
+    import DataTable from "@/components/DataTable/DataTable.vue";
+    import {
+        add${className},
+        get${className}List,
+        remove${className},
+        update${className}
+    } from "@/api/${classname}";
+
+    @Component({
+        components: {
+            DataTable
+        }
+    })
+    export default class ${className} extends Vue {
+        private get${className}List: Function = get${className}List;
+        @Ref("dataTable") private dataTable: any;
+        @Ref("selectForm") private selectForm: any;
+        @Ref("${classname}Form") private ${classname}Form: any;
+        /*搜索框*/
+        selectFormModel: any = {
+            name: ""
+        };
+        /*列信息*/
+        columns: any = [
+#foreach($column in $columns)
+#if(${column.attrname}!='createTime'&&${column.attrname}!='updateTime')
+            {label: "${column.columnComment}", prop: "${column.attrname}", sortable: "custom"},
+#else
+            {label: "${column.columnComment}", prop: "${column.attrname}", width: 160},
+#end
+#end
+        ];
+
+        // table 的参数
+        options: any = {
+            stripe: true, // 是否为斑马纹 table
+            loading: false, // 是否添加表格loading加载动画
+            highlightCurrentRow: true, // 是否支持当前行高亮显示
+            multipleSelect: true, // 是否支持列表项选中功能
+            defaultSort:{
+                prop: '${primaryKey.attrname}',
+                order: 'ascending'
+            }
+        };
+        /*操作栏*/
+        operates: any = {
+            title: "操作",
+            width: "auto",
+            fixed: "right",
+            list: [
+                {
+                    label: "编辑",
+                    type: "warning",
+                    icon: "el-icon-edit",
+                    plain: true,
+                    disabled: (index, row) => {
+                        return false;
+                    },
+                    permission: "${moduleName}:${classname}:edit",
+                    method: (index, row) => {
+                        this.handleEdit(index, row);
+                    }
+                },
+                {
+                    label: "删除",
+                    type: "danger",
+                    icon: "el-icon-delete",
+                    plain: true,
+                    disabled: (index, row) => {
+                        return false;
+                    },
+                    permission: "${moduleName}:${classname}:remove",
+                    method: (index, row) => {
+                        this.handleDelete(index, row);
+                    }
+                }
+            ]
+        };
+        dialog: any = {
+            dialogFormVisible: false,
+            title: "对话框",
+            isEdit: false,
+            isBatchEditDisabled: true,
+            isBatchRemoveDisabled: true,
+            formData: []
+        };
+
+        ${classname}Model: any = {
+#foreach($column in $columns)
+#if(${column.attrname}!=${primaryKey.attrname})
+            ${column.columnName}: "",
+#end
+#end
+        };
+
+        ${classname}FormRules: any = {
+#foreach($column in $columns)
+#if(${column.attrname}!=${primaryKey.attrname})
+            ${column.attrname}: [
+                {required: true, message: "${column.columnComment}不能为空", trigger: ["blur", "change"]},
+            ],
+#end
+#end
+        };
+
+        /*新增*/
+        handleAdd() {
+            this.dialog.title = "新增${tableComment}";
+            this.dialog.isEdit = false;
+            this.dialog.dialogFormVisible = true;
+        }
+
+        /*编辑*/
+        handleEdit(index: number, row: any) {
+            this.dialog.title = "编辑${tableComment}";
+            this.dialog.isEdit = true;
+
+            this.${classname}Model = Object.assign({}, row || this.dialog.formData[0]);
+            this.dialog.dialogFormVisible = true;
+        }
+
+        /*删除*/
+        handleDelete(index: number, row: any) {
+            this.#[[$]]#confirm("确定要删除该${tableComment}？", "警告", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                return remove${className}({"${primaryKey.attrname}s": [row.${primaryKey.attrname}]});
+            }).then((response: any) => {
+                this.dataTable.refresh();
+                this.#[[$]]#message.success(response.msg);
+            }).catch((e) => {
+                console.log(e);
+            });
+        }
+
+        /*批量删除*/
+        handleBatchDelete() {
+            //删除
+            this.#[[$]]#confirm("确定要删除选定${tableComment}？", "警告", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                const ${primaryKey.attrname}s: Array<any> = [];
+                this.dialog.formData.forEach((item, index) => {
+                    ${primaryKey.attrname}s[index] = item.${primaryKey.attrname};
+                });
+                return remove${className}({"${primaryKey.attrname}s": ${primaryKey.attrname}s});
+            }).then((response: any) => {
+                this.dataTable.refresh();
+                this.#[[$]]#message.success(response.msg);
+            }).catch((e) => {
+                console.log(e);
+            });
+        }
+
+        submitForm(): void {
+            this.${classname}Form.validate((valid: boolean) => {
+                if (valid) {
+                    if (this.dialog.isEdit) {
+                        //编辑
+                        update${className}(this.${classname}Model).then((response: any) => {
+                            this.dataTable.refresh();
+                            this.reset();
+                            this.dialog.dialogFormVisible = false;
+                            this.#[[$]]#message.success(response.msg);
+                        }).catch((e) => {
+                            console.log(e);
+                        });
+                    } else {
+                        //新增
+                        add${className}(this.${classname}Model).then((response: any) => {
+                            this.dataTable.refresh();
+                            this.reset();
+                            this.dialog.dialogFormVisible = false;
+                            this.#[[$]]#message.success(response.msg);
+                        }).catch((e) => {
+                            console.log(e);
+                        });
+                    }
+                }
+            });
+        }
+
+
+        /*选中事件*/
+        handleSelectionChange(val): void {
+            if (val) {
+                this.dialog.isBatchRemoveDisabled = val.length <= 0;
+                this.dialog.isBatchEditDisabled = val.length !== 1;
+            }
+            this.dialog.formData = val;
+        }
+
+        /*搜索*/
+        onSearch(): void {
+            this.dataTable.refresh();
+        }
+
+        /*重置*/
+        onRefreshSelectForm(): void {
+            //恢复搜索默认信息
+            this.selectForm.resetFields();
+            this.onSearch();
+        }
+
+        /*重置表单*/
+        reset(): void {
+            this.${classname}Model = {
+#foreach($column in $columns)
+#if(${column.attrname}!=${primaryKey.attrname})
+                ${column.columnName}: "",
+#end#end
+            };
+            (this as any).resetForm("${classname}Form");
+        }
+
+        /*关闭对话框*/
+        closeDialog() {
+            this.#[[$]]#nextTick(()=>{
+                this.reset();
+            });
+        }
+    }
+</script>
+
+<style scoped lang="scss">
+
+</style>
+

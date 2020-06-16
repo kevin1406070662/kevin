@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kevin.system.dao.SysMenuMapper">
+
+    <resultMap type="com.kevin.system.domain.SysMenu" id="SysMenuResult">
+                    <result property="id"  column="id"/>
+                    <result property="menuName" column="menuName"/>
+                    <result property="parentID" column="parentID"/>
+                    <result property="orderNum" column="orderNum"/>
+                    <result property="url" column="url"/>
+                    <result property="menuType" column="menuType"/>
+                    <result property="visible" column="visible"/>
+                    <result property="perms" column="perms"/>
+                    <result property="component" column="component"/>
+                    <result property="redirect" column="redirect"/>
+                    <result property="icon" column="icon"/>
+                    <result property="createBy" column="createBy"/>
+                    <result property="createTime" column="createTime"/>
+                    <result property="updateBy" column="updateBy"/>
+                    <result property="updateTime" column="updateTime"/>
+                    <result property="remark" column="remark"/>
+            </resultMap>
+
+        <select id="selectMenByRole" resultMap="SysMenuResult">
+            SELECT
+              *
+            FROM
+                tb_sys_menu AS sm
+                LEFT JOIN tb_sys_role_meun AS srm ON srm.meunID = sm.id
+            WHERE
+                srm.roleID =#{roleID}
+	         ORDER BY orderNum DESC
+       </select>
+
+
+</mapper>

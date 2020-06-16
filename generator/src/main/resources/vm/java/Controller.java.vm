@@ -1,0 +1,114 @@
+package ${package}.controller;
+
+import io.swagger.annotations.ApiOperation;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import ${package}.domain.${className};
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.kevin.common.result.Page;
+import com.kevin.common.result.Result;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import ${package}.service.${className}Service;
+
+import java.util.List;
+
+/**
+ * ${tableComment} 信息操作处理
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@RestController
+@RequestMapping("/${moduleName}/${classname}")
+@Slf4j
+@Api(tags = "接口--------${tableComment}")
+public class ${className}Controller {
+
+	@Autowired
+	${className}Service ${classname}Service;
+
+
+	/**
+	 *
+	 * 分页查询${tableComment}列表
+	 */
+	@ApiOperation("分页查询${tableComment}列表")
+	@GetMapping("/list")
+	@RequiresPermissions("${moduleName}:${classname}:list")
+	public Result list(${className} ${classname},@RequestParam(defaultValue = "1") Integer page,
+												 @RequestParam(defaultValue = "10") Integer limit){
+
+		PageHelper.startPage(page, limit);
+		List<${className}> consults = ${classname}Service.list(new QueryWrapper<${className}>(${classname}));
+		PageInfo<${className}> pageInfo = new PageInfo<${className}>(consults);
+		return Result.success(new Page<${className}>(pageInfo.getTotal(),limit,page,consults));
+	}
+
+
+	/**
+    * 新增${tableComment}
+    *
+    * @param ${classname} ${tableComment}
+    * @return 操作结果
+    */
+	@ApiOperation("新增${tableComment}")
+	@RequiresPermissions("${moduleName}:${classname}:add")
+	@PostMapping("/add")
+	public Result addSave(@RequestBody ${className} ${classname}) {
+		boolean save = ${classname}Service.save(${classname});
+		if (save){
+			log.info("新增${tableNameDB}表数据为------->"+JSONObject.toJSON(${classname})+"成功!");
+			return Result.success();
+		}else {
+			log.info("新增${tableNameDB}表数据为------->"+JSONObject.toJSON(${classname})+"失败!");
+			return Result.error();
+		}
+
+	}
+
+	/**
+	* 保存编辑${tableComment}
+	*
+	* @param ${classname} ${tableComment}
+	* @return 操作结果
+	*/
+	@ApiOperation("保存编辑${tableComment}根据id")
+	@RequiresPermissions("${moduleName}:${classname}:edit")
+	@PutMapping("/edit")
+	public Result editSave(@RequestBody ${className} ${classname}) {
+		boolean remove = ${classname}Service.updateById(${classname});;
+		if (remove){
+			log.info("更新${tableNameDB}表中数据为------->"+JSONObject.toJSON(${classname})+"成功!");
+			return Result.success();
+		}else {
+			log.info("更新${tableNameDB}表中数据为------->"+JSONObject.toJSON(${classname})+"失败!");
+			return Result.error();
+		}
+	}
+
+	/**
+    * 删除${tableComment}根据id
+    *
+    * @param ${classname} ID
+    * @return 操作结果
+    */
+	@RequiresPermissions("${moduleName}:${classname}:remove")
+	@DeleteMapping("/remove")
+	@ApiOperation("删除${tableComment}根据id")
+	public Result remove(@RequestBody ${className} ${classname} ) {
+		boolean remove = ${classname}Service.remove(new UpdateWrapper<${className}>(${classname}));
+		if (remove){
+			log.info("删除${tableNameDB}表中数据为------->"+JSONObject.toJSON(${classname})+"成功!");
+			return Result.success();
+		}else {
+			log.info("删除${tableNameDB}表中数据为------->"+JSONObject.toJSON(${classname})+"失败!");
+			return Result.error();
+		}
+	}
+}
