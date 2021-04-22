@@ -31,7 +31,7 @@
         <commons.fileupload.version>1.3.3</commons.fileupload.version>
         <poi.version>3.17</poi.version>
         <hutool.version>5.3.5</hutool.version>
-        <shiro-spring.version>1.5.2</shiro-spring.version>
+        <shiro-spring.version>1.7.0</shiro-spring.version>
         <jwt.version>3.10.2</jwt.version>
         <knife4j.version>2.0.1</knife4j.version>
         <rsa-encrypt-body-spring-boot>1.0.1.RELEASE</rsa-encrypt-body-spring-boot>
