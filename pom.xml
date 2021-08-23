@@ -36,7 +36,7 @@
         <knife4j.version>2.0.1</knife4j.version>
         <rsa-encrypt-body-spring-boot>1.0.1.RELEASE</rsa-encrypt-body-spring-boot>
         <velocity.version>1.7</velocity.version>
-        <jsoup.version>1.13.1</jsoup.version>
+        <jsoup.version>1.14.2</jsoup.version>
         <jsqlparser.version>1.4</jsqlparser.version>
         <javax.validation.version>2.0.1.Final</javax.validation.version>
     </properties>
